@@ -5,6 +5,7 @@ import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.appium.java_client.service.local.flags.GeneralServerFlag;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import java.io.File;
 import java.io.IOException;
@@ -14,11 +15,11 @@ import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 
-public class capabilityMain {
+public class capabilityMain  {
 
     public static AppiumDriverLocalService service;
     public static AppiumServiceBuilder builder;
-    public DesiredCapabilities cap;
+    public static DesiredCapabilities cap;
     public static AndroidDriver driver;
 
 
@@ -26,13 +27,13 @@ public class capabilityMain {
         if (!checkIfServerIsRunning(port)) {
             service = AppiumDriverLocalService.buildDefaultService();
             service.start();
-            System.out.println("Appium Service Launch in progress on Port: "+ port);
+            System.out.println("##########  Appium Service Launch in progress on Port: "+ port + "  ##########");
             Thread.sleep(15000);
         }
         return service;
     }
 
-    public void startServer(){
+    public AppiumDriverLocalService startServer(int port){
 
         //Set Capabilities
         cap = new DesiredCapabilities();
@@ -40,12 +41,12 @@ public class capabilityMain {
         cap.setCapability("noReset","false");
         cap.setCapability("platformName","Android");
         cap.setCapability("platformVersion","9.0");
-        cap.setCapability("deviceName","pixel_2");
+        cap.setCapability("deviceName","host5556");
 
         //Build the Appium service
         builder = new AppiumServiceBuilder();
         builder.withIPAddress("0.0.0.0");
-        builder.usingPort(4723);
+        builder.usingPort(port);
         builder.withCapabilities(cap);
         builder.withArgument(GeneralServerFlag.SESSION_OVERRIDE);
         builder.withArgument(GeneralServerFlag.LOG_LEVEL,"error");
@@ -53,6 +54,7 @@ public class capabilityMain {
       //Start the Server with builder config
         service = AppiumDriverLocalService.buildService(builder);
         service.start();
+        return service;
     }
     public void stopServer(){
         service.isRunning();
@@ -81,9 +83,9 @@ public class capabilityMain {
         File app = new File(appDir, "ApiDemos-debug.apk");
 
         DesiredCapabilities cap = new DesiredCapabilities();
-        launchEmulator("AutumEmul");
-//        cap.setCapability("avd","AutumEmul");
-        cap.setCapability(MobileCapabilityType.DEVICE_NAME,"AutumEmul");
+        launchEmulator("host5556");
+//        cap.setCapability("avd","host5556");
+        cap.setCapability(MobileCapabilityType.DEVICE_NAME,"host5556");
         cap.setCapability(MobileCapabilityType.AUTOMATION_NAME,"uiautomator2");
         cap.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT,60);
         cap.setCapability(MobileCapabilityType.APP, app.getAbsoluteFile());
@@ -101,10 +103,6 @@ public class capabilityMain {
 //        //Start the Server with builder
 //        service = AppiumDriverLocalService.buildService(builder);
 //        service.start();
-
-
-
-
         driver = new AndroidDriver(new URL("http://0.0.0.0:4723/wd/hub"), cap);
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         return driver;
@@ -113,11 +111,12 @@ public class capabilityMain {
     public static void launchEmulator(String namedAVD){
         String sdkPath = "C:/Users/flatWhite/AppData/Local/Android/Sdk";
         String emulatorPath = sdkPath+"/emulator"+File.separator+"emulator";
+        String adbServerStart = "adb" + " "+ "start-server";
         String[] aCommand = new String[] { emulatorPath,"-avd", namedAVD};
         System.out.println("emulatorPath:"+emulatorPath);
         try{
             Process process = new ProcessBuilder(aCommand).start();
-            System.out.println(" Starting Emulator.....");
+            System.out.println("########## Starting Emulator ##########");
             process.waitFor(10, TimeUnit.SECONDS);
         }
         catch (Exception e){
@@ -134,7 +133,7 @@ public class capabilityMain {
 
         try{
             Process process = new ProcessBuilder(aCommand).start();
-            System.out.println(" Killing Emulator.....");
+            System.out.println("########## Killing Emulator ##########");
             process.waitFor(10, TimeUnit.SECONDS);
         }
         catch (Exception e){
