@@ -40,7 +40,7 @@ public class capabilityMain  {
         cap.setCapability("automationName","Appium");
         cap.setCapability("noReset","false");
         cap.setCapability("platformName","Android");
-        cap.setCapability("platformVersion","9.0");
+        cap.setCapability("platformVersion","8.1.0");
         cap.setCapability("deviceName","host5556");
 
         //Build the Appium service
@@ -83,9 +83,10 @@ public class capabilityMain  {
         File app = new File(appDir, "ApiDemos-debug.apk");
 
         DesiredCapabilities cap = new DesiredCapabilities();
-        launchEmulator("host5556");
+        //launchEmulator("host5556");
+        //launchEmulator("Android Device");
 //        cap.setCapability("avd","host5556");
-        cap.setCapability(MobileCapabilityType.DEVICE_NAME,"host5556");
+        cap.setCapability(MobileCapabilityType.DEVICE_NAME,"Android Device");
         cap.setCapability(MobileCapabilityType.AUTOMATION_NAME,"uiautomator2");
         cap.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT,60);
         cap.setCapability(MobileCapabilityType.APP, app.getAbsoluteFile());
